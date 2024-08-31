@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-namespace DAW_Restanta.Models;
+namespace DAW_Restanta.Controllers;
+using DAW_Restanta.Services;
+using DAW_Restanta.Models;
+
 [Route("api/[controller]")]
 [ApiController]
 public class ProductController : ControllerBase

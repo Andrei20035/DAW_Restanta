@@ -1,4 +1,5 @@
-﻿namespace DAW_Restanta.Models;
+﻿namespace DAW_Restanta.Services;
+using DAW_Restanta.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class CartService

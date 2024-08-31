@@ -13,7 +13,7 @@ public class User
     public string Email { get; set; }
     public DateTime CreatedAt { get; set; }
 
-    public ICollection<Order> Orders { get; set; }
-    public ICollection<Review> Reviews { get; set; }
-    public ICollection<ShoppingCart> ShoppingCarts { get; set; }
+    public ICollection<Order> Orders { get; set; } = new List<Order>();
+    public ICollection<Review> Reviews { get; set; } = new List<Review>();
+    public ICollection<ShoppingCart> ShoppingCarts { get; set; } = new List<ShoppingCart>();
 }

@@ -21,11 +21,9 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Configurarea cheii primare compuse pentru ProductCategory
         modelBuilder.Entity<ProductCategory>()
             .HasKey(pc => new { pc.ProductID, pc.CategoryID });
 
-        // Configurarea relațiilor între entități
         modelBuilder.Entity<OrderDetails>()
             .HasOne(od => od.Order)
             .WithMany(o => o.OrderDetails)
@@ -61,11 +59,11 @@ public class ApplicationDbContext : DbContext
             .WithOne(o => o.ShippingDetails)
             .HasForeignKey<ShippingDetails>(sd => sd.OrderID);
 
-        // Configurarea proprietăților și a tabelelor
         modelBuilder.Entity<User>(entity =>
         {
             entity.ToTable("Users");
             entity.HasKey(e => e.UserID);
+            entity.Property(e => e.UserID).ValueGeneratedOnAdd(); 
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Address).HasMaxLength(200);
             entity.Property(e => e.Username).IsRequired().HasMaxLength(50);
@@ -78,6 +76,7 @@ public class ApplicationDbContext : DbContext
         {
             entity.ToTable("Products");
             entity.HasKey(e => e.ProductID);
+            entity.Property(e => e.ProductID).ValueGeneratedOnAdd(); 
             entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
             entity.Property(e => e.Description).HasColumnType("TEXT");
             entity.Property(e => e.Price).IsRequired().HasColumnType("DECIMAL(10, 2)");
@@ -90,6 +89,7 @@ public class ApplicationDbContext : DbContext
         {
             entity.ToTable("Orders");
             entity.HasKey(e => e.OrderID);
+            entity.Property(e => e.OrderID).ValueGeneratedOnAdd(); 
             entity.Property(e => e.OrderDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.TotalAmount).IsRequired().HasColumnType("DECIMAL(10, 2)");
         });
@@ -98,6 +98,7 @@ public class ApplicationDbContext : DbContext
         {
             entity.ToTable("OrderDetails");
             entity.HasKey(e => e.OrderDetailID);
+            entity.Property(e => e.OrderDetailID).ValueGeneratedOnAdd(); 
             entity.Property(e => e.Quantity).IsRequired();
             entity.Property(e => e.Price).IsRequired().HasColumnType("DECIMAL(10, 2)");
         });
@@ -106,6 +107,7 @@ public class ApplicationDbContext : DbContext
         {
             entity.ToTable("Categories");
             entity.HasKey(e => e.CategoryID);
+            entity.Property(e => e.CategoryID).ValueGeneratedOnAdd(); 
             entity.Property(e => e.Name).IsRequired().HasMaxLength(50);
         });
 
@@ -113,6 +115,7 @@ public class ApplicationDbContext : DbContext
         {
             entity.ToTable("Reviews");
             entity.HasKey(e => e.ReviewID);
+            entity.Property(e => e.ReviewID).ValueGeneratedOnAdd(); 
             entity.Property(e => e.Rating).IsRequired();
             entity.Property(e => e.Comment).HasColumnType("TEXT");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -122,6 +125,7 @@ public class ApplicationDbContext : DbContext
         {
             entity.ToTable("ShoppingCart");
             entity.HasKey(e => e.CartID);
+            entity.Property(e => e.CartID).ValueGeneratedOnAdd(); 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
@@ -129,6 +133,7 @@ public class ApplicationDbContext : DbContext
         {
             entity.ToTable("CartItems");
             entity.HasKey(e => e.CartItemID);
+            entity.Property(e => e.CartItemID).ValueGeneratedOnAdd(); 
             entity.Property(e => e.Quantity).IsRequired();
         });
 
@@ -136,6 +141,7 @@ public class ApplicationDbContext : DbContext
         {
             entity.ToTable("ShippingDetails");
             entity.HasKey(e => e.ShippingID);
+            entity.Property(e => e.ShippingID).ValueGeneratedOnAdd(); 
             entity.Property(e => e.Address).IsRequired().HasMaxLength(200);
             entity.Property(e => e.City).IsRequired().HasMaxLength(50);
             entity.Property(e => e.PostalCode).IsRequired().HasMaxLength(20);
