@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Proiect_DAW2.Migrations
+namespace DAW_Restanta.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240831153034_AddAutoIncrementKeys")]
-    partial class AddAutoIncrementKeys
+    [Migration("20240901220018_InitialCommit")]
+    partial class InitialCommit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -140,9 +140,9 @@ namespace Proiect_DAW2.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<byte[]>("Image")
+                    b.Property<string>("Image")
                         .IsRequired()
-                        .HasColumnType("VARBINARY(MAX)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()

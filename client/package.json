@@ -60,9 +60,9 @@
     "workbox-webpack-plugin": "^6.4.1"
   },
   "scripts": {
-    "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "start": "cross-env NODE_ENV=development node scripts/start.js",
+    "build": "cross-env NODE_ENV=production node scripts/build.js",
+    "test": "cross-env NODE_ENV=test node scripts/test.js"
   },
   "proxy": "https://localhost:44330",
   "eslintConfig": {
@@ -84,7 +84,8 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "cross-env": "^7.0.3"
   },
   "jest": {
     "roots": [
@@ -108,38 +109,38 @@
     "transform": {
       "^.+\\.(js|jsx|mjs|cjs|ts|tsx)$": "<rootDir>/config/jest/babelTransform.js",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
-      "^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
-    },
-    "transformIgnorePatterns": [
-      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$",
-      "^.+\\.module\\.(css|sass|scss)$"
-    ],
-    "modulePaths": [],
-    "moduleNameMapper": {
-      "^react-native$": "react-native-web",
-      "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
-    },
-    "moduleFileExtensions": [
-      "web.js",
-      "js",
-      "web.ts",
-      "ts",
-      "web.tsx",
-      "tsx",
-      "json",
-      "web.jsx",
-      "jsx",
-      "node"
-    ],
-    "watchPlugins": [
-      "jest-watch-typeahead/filename",
-      "jest-watch-typeahead/testname"
-    ],
-    "resetMocks": true
-  },
-  "babel": {
-    "presets": [
-      "react-app"
-    ]
+      "^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js",
+      "transformIgnorePatterns": [
+        "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$",
+        "^.+\\.module\\.(css|sass|scss)$"
+      ],
+      "modulePaths": [],
+      "moduleNameMapper": {
+        "^react-native$": "react-native-web",
+        "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
+        "moduleFileExtensions": [
+          "web.js",
+          "js",
+          "web.ts",
+          "ts",
+          "web.tsx",
+          "tsx",
+          "json",
+          "web.jsx",
+          "jsx",
+          "node"
+        ],
+        "watchPlugins": [
+          "jest-watch-typeahead/filename",
+          "jest-watch-typeahead/testname"
+        ],
+        "resetMocks": true
+      },
+      "babel": {
+        "presets": [
+          "react-app"
+        ]
+      }
+    }
   }
 }

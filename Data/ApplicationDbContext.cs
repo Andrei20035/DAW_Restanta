@@ -80,7 +80,7 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
             entity.Property(e => e.Description).HasColumnType("TEXT");
             entity.Property(e => e.Price).IsRequired().HasColumnType("DECIMAL(10, 2)");
-            entity.Property(e => e.Image).HasColumnType("VARBINARY(MAX)");
+            entity.Property(e => e.Image).HasColumnType("TEXT");
             entity.Property(e => e.Stock).IsRequired();
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });

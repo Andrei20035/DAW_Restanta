@@ -1,11 +1,13 @@
 ﻿import React from 'react';
-import Header from '../components/Header';
+import Banner from '../components/Banner';
+import ProductList from '../components/ProductList';
+import './HomePage.css';
 
 const HomePage = () => {
     return (
-        <div>
-            <Header />
-            <h2>Welcome to DAW Restanta</h2>
+        <div className="home-page">
+            <Banner />
+            <ProductList />
         </div>
     );
 };

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using DAW_Restanta.Services;
+using DAW_Restanta.Data;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<OrderService>();
-builder.Services.AddScoped<ProductService> ();
+builder.Services.AddScoped<ProductService>();
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
@@ -43,6 +44,21 @@ else
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
+}
+
+// Populează baza de date cu produse inițiale
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        SeedData.Initialize(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred seeding the DB.");
+    }
 }
 
 app.UseHttpsRedirection();
