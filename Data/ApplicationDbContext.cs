@@ -77,11 +77,12 @@ public class ApplicationDbContext : DbContext
         {
             entity.ToTable("Users");
             entity.HasKey(e => e.UserID);
-            entity.Property(e => e.UserID).ValueGeneratedOnAdd(); 
+            entity.Property(e => e.UserID).ValueGeneratedOnAdd();
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Address).HasMaxLength(200);
             entity.Property(e => e.Username).IsRequired().HasMaxLength(50);
-            entity.Property(e => e.PasswordHash).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.PasswordHash).IsRequired().HasColumnType("varbinary(max)");
+            entity.Property(e => e.PasswordSalt).IsRequired().HasColumnType("varbinary(max)");
             entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.Role).IsRequired().HasMaxLength(50);

@@ -1,46 +1,61 @@
-using Microsoft.AspNetCore.Mvc;
-namespace DAW_Restanta.Controllers;
-using DAW_Restanta.Services;
 using DAW_Restanta.Models;
+using DAW_Restanta.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
-[Route("api/[controller]")]
-[ApiController]
-public class CartController : ControllerBase
+namespace DAW_Restanta.Controllers
 {
-    private readonly CartService _cartService;
-
-    public CartController(CartService cartService)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ShoppingCartController : ControllerBase
     {
-        _cartService = cartService;
-    }
+        private readonly IShoppingCartService _shoppingCartService;
 
-    [HttpGet("{cartId}")]
-    public async Task<ActionResult<IEnumerable<CartItem>>> GetCartItems(int cartId)
-    {
-        var items = await _cartService.GetCartItems(cartId);
-        return Ok(items);
-    }
+        public ShoppingCartController(IShoppingCartService shoppingCartService)
+        {
+            _shoppingCartService = shoppingCartService;
+        }
 
-    [HttpPost]
-    public async Task<ActionResult<CartItem>> AddToCart(CartItem cartItem)
-    {
-        var newItem = await _cartService.AddToCart(cartItem);
-        return CreatedAtAction(nameof(GetCartItems), new { cartId = newItem.CartID }, newItem);
-    }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ShoppingCart>>> GetAllShoppingCarts()
+        {
+            var shoppingCarts = await _shoppingCartService.GetAllShoppingCartsAsync();
+            return Ok(shoppingCarts);
+        }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> RemoveFromCart(int id)
-    {
-        var result = await _cartService.RemoveFromCart(id);
-        if (!result) return NotFound();
-        return NoContent();
-    }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ShoppingCart>> GetShoppingCartById(int id)
+        {
+            var shoppingCart = await _shoppingCartService.GetShoppingCartByIdAsync(id);
+            if (shoppingCart == null)
+            {
+                return NotFound();
+            }
+            return Ok(shoppingCart);
+        }
 
-    [HttpPost("clear/{cartId}")]
-    public async Task<IActionResult> ClearCart(int cartId)
-    {
-        var result = await _cartService.ClearCart(cartId);
-        if (!result) return NotFound();
-        return NoContent();
+        [HttpPost]
+        public async Task<ActionResult> AddShoppingCart(ShoppingCart shoppingCart)
+        {
+            await _shoppingCartService.AddShoppingCartAsync(shoppingCart);
+            return CreatedAtAction(nameof(GetShoppingCartById), new { id = shoppingCart.CartID }, shoppingCart);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateShoppingCart(int id, ShoppingCart shoppingCart)
+        {
+            if (id != shoppingCart.CartID)
+            {
+                return BadRequest();
+            }
+            await _shoppingCartService.UpdateShoppingCartAsync(shoppingCart);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteShoppingCart(int id)
+        {
+            await _shoppingCartService.DeleteShoppingCartAsync(id);
+            return NoContent();
+        }
     }
 }

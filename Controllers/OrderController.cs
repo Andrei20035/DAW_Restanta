@@ -1,30 +1,61 @@
-using Microsoft.AspNetCore.Mvc;
-namespace DAW_Restanta.Controllers;
-using DAW_Restanta.Services;
 using DAW_Restanta.Models;
+using DAW_Restanta.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
-[Route("api/[controller]")]
-[ApiController]
-public class OrderController : ControllerBase
+namespace DAW_Restanta.Controllers
 {
-    private readonly OrderService _orderService;
-
-    public OrderController(OrderService orderService)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class OrderController : ControllerBase
     {
-        _orderService = orderService;
-    }
+        private readonly IOrderService _orderService;
 
-    [HttpGet("{userId}")]
-    public async Task<ActionResult<IEnumerable<Order>>> GetOrders(int userId)
-    {
-        var orders = await _orderService.GetOrdersByUserId(userId);
-        return Ok(orders);
-    }
+        public OrderController(IOrderService orderService)
+        {
+            _orderService = orderService;
+        }
 
-    [HttpPost]
-    public async Task<ActionResult<Order>> PlaceOrder(Order order)
-    {
-        var newOrder = await _orderService.PlaceOrder(order);
-        return CreatedAtAction(nameof(GetOrders), new { userId = newOrder.UserID }, newOrder);
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Order>>> GetAllOrders()
+        {
+            var orders = await _orderService.GetAllOrdersAsync();
+            return Ok(orders);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Order>> GetOrderById(int id)
+        {
+            var order = await _orderService.GetOrderByIdAsync(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            return Ok(order);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddOrder(Order order)
+        {
+            await _orderService.AddOrderAsync(order);
+            return CreatedAtAction(nameof(GetOrderById), new { id = order.OrderID }, order);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateOrder(int id, Order order)
+        {
+            if (id != order.OrderID)
+            {
+                return BadRequest();
+            }
+            await _orderService.UpdateOrderAsync(order);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteOrder(int id)
+        {
+            await _orderService.DeleteOrderAsync(id);
+            return NoContent();
+        }
     }
 }

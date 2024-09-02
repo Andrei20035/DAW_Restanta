@@ -1,20 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using DAW_Restanta.Services;
 using DAW_Restanta.Data;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using DAW_Restanta.Services.Implementations;
+using DAW_Restanta.Repositories.Interfaces;
+using DAW_Restanta.Repositories.Implementations;
+using DAW_Restanta.Services.Interfaces;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<CartService>();
-builder.Services.AddScoped<OrderService>();
-builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
@@ -33,7 +42,6 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "DAW_Restanta API", Version = "v1" });
 });
 
-// Configurarea autentificării și autorizării
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -71,7 +79,6 @@ else
     app.UseHsts();
 }
 
-// Populează baza de date cu produse inițiale
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -93,7 +100,7 @@ app.UseRouting();
 
 app.UseCors("AllowAll");
 
-app.UseAuthentication(); // Adaugă autentificarea
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllers();
