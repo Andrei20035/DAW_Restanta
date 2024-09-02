@@ -12,8 +12,10 @@ public class User
     public string PasswordHash { get; set; }
     public string Email { get; set; }
     public DateTime CreatedAt { get; set; }
+    public string Role { get; set; } = "User"; // Adaugă acest câmp pentru roluri
 
     public ICollection<Order> Orders { get; set; } = new List<Order>();
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
     public ICollection<ShoppingCart> ShoppingCarts { get; set; } = new List<ShoppingCart>();
 }
+

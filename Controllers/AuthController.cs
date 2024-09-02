@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
-namespace DAW_Restanta.Controllers;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using DAW_Restanta.Services;
 using DAW_Restanta.Models;
 
@@ -29,5 +29,14 @@ public class AuthController : ControllerBase
             return Unauthorized();
 
         return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("createAdmin")]
+    public async Task<ActionResult<User>> CreateAdmin(User user)
+    {
+        user.Role = "Admin"; // Setează rolul ca "Admin"
+        var newUser = await _authService.Register(user);
+        return CreatedAtAction(nameof(Register), newUser);
     }
 }

@@ -21,8 +21,19 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Many to many relationship between Product and Category
         modelBuilder.Entity<ProductCategory>()
             .HasKey(pc => new { pc.ProductID, pc.CategoryID });
+
+        modelBuilder.Entity<ProductCategory>()
+            .HasOne(pc => pc.Product)
+            .WithMany(p => p.ProductCategories)
+            .HasForeignKey(pc => pc.ProductID);
+
+        modelBuilder.Entity<ProductCategory>()
+            .HasOne(pc => pc.Category)
+            .WithMany(c => c.ProductCategories)
+            .HasForeignKey(pc => pc.CategoryID);
 
         modelBuilder.Entity<OrderDetails>()
             .HasOne(od => od.Order)
@@ -39,11 +50,13 @@ public class ApplicationDbContext : DbContext
             .WithMany(p => p.Reviews)
             .HasForeignKey(r => r.ProductID);
 
+        // One to many relationship between User and Review
         modelBuilder.Entity<Review>()
             .HasOne(r => r.User)
             .WithMany(u => u.Reviews)
             .HasForeignKey(r => r.UserID);
 
+        // One to many relationship between User and Order
         modelBuilder.Entity<CartItem>()
             .HasOne(ci => ci.ShoppingCart)
             .WithMany(sc => sc.CartItems)
@@ -54,6 +67,7 @@ public class ApplicationDbContext : DbContext
             .WithMany(p => p.CartItems)
             .HasForeignKey(ci => ci.ProductID);
 
+        // One to one relationship between Order and ShippingDetails
         modelBuilder.Entity<ShippingDetails>()
             .HasOne(sd => sd.Order)
             .WithOne(o => o.ShippingDetails)
@@ -70,6 +84,7 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.PasswordHash).IsRequired().HasMaxLength(255);
             entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.Role).IsRequired().HasMaxLength(50);
         });
 
         modelBuilder.Entity<Product>(entity =>
